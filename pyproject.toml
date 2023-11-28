@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "home-infra"
+version = "0.1.0"
+description = ""
+authors = ["Алексей Епанчинцев <alexey@epanchincev.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+sqlalchemy = "^2.0.23"
+alembic = "^1.12.1"
+asyncpg = "^0.29.0"
+fastapi = "^0.104.1"
+uvicorn = "^0.24.0.post1"
+aiosqlite = "^0.19.0"
+python-dotenv = "^1.0.0"
+pydantic-settings = "^2.1.0"
+fastapi-users = {extras = ["sqlalchemy"], version = "^12.1.2"}
+setuptools = "^69.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
