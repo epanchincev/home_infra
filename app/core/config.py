@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     secret: str
     first_superuser_email: EmailStr | None = None
     first_superuser_password: str| None = None
+    authorization: str
+    ertelecom_login: str
     
     class Config:
         env_file = '.env'

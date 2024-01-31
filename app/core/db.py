@@ -1,6 +1,5 @@
-from sqlalchemy import Integer, Column
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
+from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker, Mapped, mapped_column
 
 from app.core.config import settings
 
@@ -11,7 +10,7 @@ class PreBase:
     def __tablename__(cls) -> str:
         return cls.__name__.lower()
     
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
 
 Base = declarative_base(cls=PreBase)
