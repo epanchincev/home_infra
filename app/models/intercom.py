@@ -8,4 +8,4 @@ class Intercom(Base):
     """Данные домофонов"""
 
     intercom_id: Mapped[int] = mapped_column(unique=True)
-    intercom_name: Mapped[str] = mapped_column(String(256), unique=True)
+    name: Mapped[str] = mapped_column(String(256), unique=True)

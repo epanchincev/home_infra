@@ -38,4 +38,5 @@ class Intercom:
             headers=self._HEADERS,
         ) as response:
             return await response.read()
-intercom = Intercom()
+
+intercom_action = Intercom()

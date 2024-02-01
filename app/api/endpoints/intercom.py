@@ -1,7 +1,15 @@
 import aiohttp
 from fastapi import APIRouter, Depends, Response, Body
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.ertelecom.intercom import intercom, get_inet_session
+from app.api.validators import existence_check, check_intercom_duplicate
+from app.core.db import get_async_session
+from app.core.user import current_superuser
+from app.crud import intercom_crud
+from app.models import Intercom
+from app.schemas import IntercomCreate, IntercomUpdate, IntercomDB
+from app.ertelecom.intercom import intercom_action, get_inet_session
+
 
 router = APIRouter()
 
@@ -11,8 +19,11 @@ router = APIRouter()
 async def open_intercom(
     intercom_id: int = Body(...),
     http_session: aiohttp.ClientSession = Depends(get_inet_session),
+    session: AsyncSession = Depends(get_async_session),
 ) -> None:
-    await intercom.open_door(http_session, intercom_id)
+    intercom_db = await intercom_crud.get(intercom_id, session)
+    existence_check(intercom_db)
+    await intercom_action.open_door(http_session, intercom_db.intercom_id)
 
 
 @router.get(
@@ -21,8 +32,112 @@ async def open_intercom(
 async def get_snapshot(
     intercom_id: int,
     http_session: aiohttp.ClientSession = Depends(get_inet_session),
+    session: AsyncSession = Depends(get_async_session),
 ) -> Response:
+    intercom_db = await intercom_crud.get(intercom_id, session)
+    existence_check(intercom_db)
     return Response(
-        await intercom.get_image(http_session, intercom_id),
+        await intercom_action.get_image(http_session, intercom_db.intercom_id),
         media_type='image/png',
     )
+
+
+@router.get(
+    '/',
+    response_model=list[IntercomDB],
+)
+async def get_all_intercoms(
+    session: AsyncSession = Depends(get_async_session),
+) -> list[IntercomDB]:
+    """Получить все домофоны в БД."""
+    return await intercom_crud.get_multi(session)
+
+
+@router.get(
+    '/{intercom_id}',
+    response_model=IntercomDB,
+)
+async def get_intercom(
+    intercom_id: int,
+    session: AsyncSession = Depends(get_async_session),
+) -> IntercomDB:
+    """Получить домофон по id"""
+    intercom = intercom_crud.get(intercom_id, session)
+    existence_check(intercom)
+    
+    return intercom
+
+
+@router.post(
+    '/',
+    response_model=IntercomDB,
+    dependencies=[Depends(current_superuser)],
+)
+async def create_intercom(
+    intercom: IntercomCreate,
+    session: AsyncSession = Depends(get_async_session),
+) -> IntercomDB:
+    """
+    Только для суперюзеров.\n
+    Создать новый домофон"""
+    await check_intercom_duplicate(
+        intercom.intercom_id,
+        intercom.name,
+        session,
+    )
+    new_intercom = Intercom(**intercom.model_dump())
+    session.add(new_intercom)
+    await session.commit()
+    await session.refresh(new_intercom)
+    
+    return new_intercom
+
+
+@router.delete(
+    '/{intercom_id}',
+    response_model=IntercomDB,
+    dependencies=[Depends(current_superuser)],
+)
+async def delete_charity_project(
+    intercom_id: int,
+    session: AsyncSession = Depends(get_async_session),
+) -> IntercomDB:
+    """
+    Только для суперюзеров.\n
+    Удаляет домофон.
+    """
+    project = await intercom_crud.get(intercom_id, session)
+    existence_check(project)
+    project = await intercom_crud.remove(project, session)
+
+    return project
+
+@router.patch(
+    '/{intercom_id}',
+    response_model=IntercomDB,
+    dependencies=[Depends(current_superuser)],
+)
+async def update_charity_project(
+    intercom_id: int,
+    intercom_in: IntercomUpdate,
+    session: AsyncSession = Depends(get_async_session),
+) -> IntercomDB:
+    """
+    Только для суперюзеров.\n
+    Редактирование домофона.
+    """
+    intercom = await intercom_crud.get(intercom_id, session)
+
+    existence_check(intercom)
+
+    check_intercom_duplicate(
+        intercom_in.intercom_id, 
+        intercom_in.name, 
+        session,
+    )
+
+    intercom = await intercom_crud.update(
+        intercom, intercom_in, session,
+    )
+
+    return intercom
