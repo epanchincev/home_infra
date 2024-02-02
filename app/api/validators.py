@@ -8,6 +8,7 @@ from app.models import Intercom, BotUser
 
 
 OBJECT_NOT_FOUND_ERROR = '{} не найден!'
+OBJECT_FOUND_ERROR = '{} уже существует!'
 
 def existence_check(object: Intercom | BotUser) -> None:
     """Проверяет существование объекта"""
@@ -16,7 +17,14 @@ def existence_check(object: Intercom | BotUser) -> None:
             status_code=HTTPStatus.NOT_FOUND,
             detail=OBJECT_NOT_FOUND_ERROR.format(object.__class__.__name__),
         )
-
+        
+def not_existence_check(object: Intercom | BotUser) -> None:
+    """Проверяет существование объекта"""
+    if object:
+        raise HTTPException(
+            status_code=HTTPStatus.CONFLICT,
+            detail=OBJECT_FOUND_ERROR.format(object.__class__.__name__),
+        )
 
 async def check_intercom_duplicate(
     intercom_id: int,

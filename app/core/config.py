@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     first_superuser_password: str| None = None
     authorization: str
     ertelecom_login: str
+    bot_email: str
+    bot_password: str
+    bot_token: str
+    api_url: str
     
     class Config:
         env_file = '.env'

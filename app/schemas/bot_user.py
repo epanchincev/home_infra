@@ -4,9 +4,9 @@ from pydantic import BaseModel, Field
 class BotUserBase(BaseModel):
 
     id: int
-    first_name: str = Field(max_length=64)
-    last_name: str = Field(max_length=64)
-    username: str = Field(max_length=64)
+    first_name: str = Field(None, max_length=64)
+    last_name: str = Field(None, max_length=64)
+    username: str = Field(None, max_length=64)
     
     
 class BotUserCreate(BotUserBase):
@@ -24,4 +24,4 @@ class BotUserDB(BotUserBase):
     
     class Config:
         
-        orm_modet: True
+        from_attributes: True

@@ -98,7 +98,7 @@ async def create_intercom(
     response_model=IntercomDB,
     dependencies=[Depends(current_superuser)],
 )
-async def delete_charity_project(
+async def delete_intercom(
     intercom_id: int,
     session: AsyncSession = Depends(get_async_session),
 ) -> IntercomDB:
@@ -117,7 +117,7 @@ async def delete_charity_project(
     response_model=IntercomDB,
     dependencies=[Depends(current_superuser)],
 )
-async def update_charity_project(
+async def update_intercom(
     intercom_id: int,
     intercom_in: IntercomUpdate,
     session: AsyncSession = Depends(get_async_session),

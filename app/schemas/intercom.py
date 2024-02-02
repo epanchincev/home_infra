@@ -23,6 +23,10 @@ class IntercomDB(IntercomBase):
     
     id: int
     
+
+    def __str__(self) -> str:
+        return f'{self.id}: {self.name}'
+
     class Config:
         
-        orm_mode = True
+        from_attributes = True
