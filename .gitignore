@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 log.txt
+home_db.sqlite
