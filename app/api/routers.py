@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import user_router, intercom_router, bot_user_router
+from app.api.endpoints import (user_router, intercom_router,
+                               bot_user_router, recognition_router)
 
 main_router = APIRouter()
 main_router.include_router(user_router)
@@ -13,4 +14,9 @@ main_router.include_router(
     bot_user_router,
     prefix='/bot_user',
     tags=['Пользователи бота']
+)
+main_router.include_router(
+    recognition_router,
+    prefix='/recognition',
+    tags=['Распознавание лиц']
 )

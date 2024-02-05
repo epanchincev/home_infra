@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     bot_password: str
     bot_token: str
     api_url: str
+    face_data: str
     
     class Config:
         env_file = '.env'

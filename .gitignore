@@ -161,3 +161,5 @@ cython_debug/
 
 log.txt
 home_db.sqlite
+known_faces.dat
+photos/

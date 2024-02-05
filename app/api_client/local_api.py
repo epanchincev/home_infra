@@ -4,7 +4,7 @@ from http import HTTPStatus
 from aiohttp import ClientSession
 
 from core.config import settings
-from schemas import IntercomDB
+from schemas import IntercomDB, FaceRecognitionRead
 
 
 class LocalAPI:
@@ -20,6 +20,7 @@ class LocalAPI:
     _AUTH_URL = f'{_BASE_URL}/auth/jwt/login'
     _INTERCOM_URL = f'{_BASE_URL}/intercom'
     _BOT_USER_URL = f'{_BASE_URL}/bot_user'
+    _RECOGNITION_URL = f'{_BASE_URL}/recognition/'
     
     def __init__(self) -> None:
         asyncio.run(self.get_api_token())
@@ -64,6 +65,26 @@ class LocalAPI:
             response = await response.json()
             
             return [IntercomDB(**answer) for answer in response]
+        
+    async def add_face_to_recognition(
+        self,
+        session: ClientSession,
+        image: bytes,
+        name: str,
+        from_id: int | None = None,
+    ) -> FaceRecognitionRead:
+        async with session.post(
+            self._RECOGNITION_URL,
+            headers=self._HEADER,
+            data={
+                'image': image,
+                'name': name,
+                'from_id': str(from_id),
+            }
+        ) as response:
+            response = await response.json()
+            
+            return FaceRecognitionRead(**response)
 
 
 local = LocalAPI()

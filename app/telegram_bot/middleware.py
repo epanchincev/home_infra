@@ -6,7 +6,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from aiogram.exceptions import TelegramBadRequest
 
-from telegram_bot.local_api import local
+from api_client.local_api import local
 
 
 class MainMiddleware(BaseMiddleware):

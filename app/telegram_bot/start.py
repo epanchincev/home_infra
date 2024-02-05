@@ -1,27 +1,40 @@
 from aiohttp import ClientSession
-
-from aiogram import F, Router
-from aiogram.filters import Command
+from aiogram import F, Router, Bot
+from aiogram.filters import Command, StateFilter
 from aiogram.types import (
     Message, ReplyKeyboardMarkup, InlineKeyboardMarkup,
     CallbackQuery, BufferedInputFile)
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.fsm.context import FSMContext
 
+from telegram_bot.states import BotState
 from telegram_bot.callback_factory import IntercomCallback
 from schemas import IntercomDB
-from telegram_bot.local_api import local
+from api_client.local_api import local
 
 router = Router()
 router.my_chat_member.filter(F.chat.type == 'private')
 
 INTERCOM_TEXT = '📞Домофоны'
-PHOTO_TEXT = '📸Фото'
+PHOTO_TEXT = '📸Фото в распознавание'
 WELCOME_TEXT = 'Добро пожаловать!'
 WELCOME_COMMANDS = ('start', 'keyboard', 'cancel')
 TEXT_TAG = {
     INTERCOM_TEXT: 'open',
     PHOTO_TEXT: 'snapshot',
 }
+TEXT_SET_STATE_ADD_PHOTO = (
+    'Отправьте фото гостя и подпишите его имя в одном сообщении.'
+    'На фото должно быть одно лицо.'
+)
+BACK_TO_MENU = '↩️В главное меню'
+
+def get_back_to_menu_keyboard() -> ReplyKeyboardMarkup:
+    kb = ReplyKeyboardBuilder()
+    kb.button(text=BACK_TO_MENU)
+
+    return kb.as_markup(resize_keyboard=True)
+
 
 def get_main_keyboard() -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardBuilder()
@@ -52,8 +65,10 @@ def get_intercom_keyboard(
 @router.message(Command(*WELCOME_COMMANDS))
 async def cmd_start(
     message: Message,
+    state: FSMContext,
     **kwargs,
 ) -> None:
+    await state.clear()
     await message.answer(
         WELCOME_TEXT,
         reply_markup=get_main_keyboard()
@@ -87,8 +102,8 @@ async def snapshot(
     await callback.answer('ОК')
     
     
-@router.message(F.text.in_((INTERCOM_TEXT, PHOTO_TEXT)))
-async def get_contorl_keyboard(
+@router.message(F.text == INTERCOM_TEXT)
+async def get_control_keyboard(
     message: Message,
     http_session: ClientSession,
     **kwargs,
@@ -101,3 +116,52 @@ async def get_contorl_keyboard(
             intercoms
         )
     )
+    
+@router.message(F.text == PHOTO_TEXT)
+async def set_state_add_photo_to_known_faces(
+    message: Message,
+    state: FSMContext,
+) -> None:
+    await state.set_state(BotState.add_photo)
+    await message.answer(
+        TEXT_SET_STATE_ADD_PHOTO,
+        reply_markup=get_back_to_menu_keyboard(),
+    )
+    
+@router.message(F.text == BACK_TO_MENU)
+async def back_to_menu(
+    message: Message,
+    state: FSMContext,
+    bot
+) -> None:
+    await state.clear()
+    await message.answer(
+        'Главное меню',
+        reply_markup=get_main_keyboard(),
+    )
+
+@router.message(StateFilter(BotState.add_photo))
+async def add_photo_to_known_faces(
+    message: Message,
+    http_session: ClientSession,
+    bot: Bot,
+) -> None:
+    photos = message.photo
+    
+    if not photos:
+        await message.answer('Фото не отправлено.')
+        return
+
+    if not message.caption:
+        await message.answer('Отсутвует имя')
+        return
+    
+    photo = photos.pop()
+    file = await bot.get_file(photo.file_id)
+    photo = await bot.download_file(file.file_path)
+    
+    face = await local.add_face_to_recognition(
+        http_session, photo, message.caption, message.from_user.id,
+    )
+    
+    await message.answer(f'Создан объект: {face}')
