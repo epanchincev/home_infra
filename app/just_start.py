@@ -8,13 +8,14 @@ from pathlib import Path
 
 from aiohttp import ClientSession
 import numpy as np
+from numpy.typing import NDArray
 import face_recognition
 
-sys.path = ['C:\\Dev\\home_infra\\'] + sys.path
+sys.path = ['C:\\Dev\\home_infra\\'] + sys.path  # noqa
 
-from api_client.local_api import local
-from app.bot import bot
-from app.schemas import FaceRecognitionRead
+from api_client.local_api import local  # noqa
+from app.bot import bot  # noqa
+from app.schemas import FaceRecognitionRead  # noqa
 
 class NotOnlyOneFaceRecognition(Exception):
     pass
@@ -55,7 +56,7 @@ class FaceRec:
             pass
             
 
-    def get_face_encodings(self, image: bytes) -> list[np.array]:
+    def get_face_encodings(self, image: bytes) -> list[NDArray]:
         image = io.BytesIO(image)
         image = face_recognition.load_image_file(image)
         faces = face_recognition.face_encodings(image)
@@ -90,7 +91,7 @@ class FaceRec:
         
         return face_meta
         
-    def lookup_known_face(self, face_encoding: np.array) -> dict | None:
+    def lookup_known_face(self, face_encoding: NDArray) -> dict | None:
         metadata = None
         
         if len(self.known_face_encodings) == 0:
