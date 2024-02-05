@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form
 
 from app.core.user import current_user
 from app.schemas import FaceRecognitionRead
-from app.face_recognition import face_rec
+from app.face_recognition_local import face_rec
 
 
 
