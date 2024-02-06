@@ -26,7 +26,7 @@ async def open_intercom(
 
 
 @router.get(
-    '/snapshot/{intercom_id}',
+    '/{intercom_id}/snapshot',
 )
 async def get_snapshot(
     intercom_id: int,
@@ -39,6 +39,21 @@ async def get_snapshot(
         await intercom_action.get_image(http_session, intercom_db.intercom_id),
         media_type='image/png',
     )
+
+
+@router.get(
+    '/{intercom_id}/videolink',
+)
+async def get_video_link(
+    intercom_id: int,
+    http_session: aiohttp.ClientSession = Depends(get_inet_session),
+    session: AsyncSession = Depends(get_async_session),
+) -> str | None:
+    intercom_db = await intercom_crud.get(intercom_id, session)
+    existence_check(intercom_db)
+    link = await intercom_action.get_video_link(http_session, intercom_db.intercom_id)
+
+    return link
 
 
 @router.get(

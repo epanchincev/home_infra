@@ -5,6 +5,8 @@ from pathlib import Path
 
 import face_recognition
 import numpy as np
+from numpy.typing import NDArray
+
 
 from app.core.config import settings
 from app.schemas import FaceRecognitionRead
@@ -41,8 +43,13 @@ class FaceRec:
                 )
         except FileNotFoundError:
             pass
+
+    def get_many_faces_encodings(self, image):
+        boxes = face_recognition.face_locations(image)
+        encodings = face_recognition.face_encodings(image, boxes)
+        return encodings    
         
-    def get_face_encodings(self, image: bytes) -> np.array:
+    def get_face_encodings(self, image: bytes) -> NDArray:
         image = io.BytesIO(image)
         image = face_recognition.load_image_file(image)
         faces = face_recognition.face_encodings(image)
@@ -51,7 +58,11 @@ class FaceRec:
                 f'На фото должно быть одно лицо. Распознано {len(faces)}'
             )
         return faces.pop()
-            
+    
+    # def get_many_faces_encodings(self, image: bytes) -> list[NDArray]:
+    #     image = io.BytesIO(image)
+    #     image = face_recognition.load_image_file(image)
+    #     return face_recognition.face_encodings(image)
 
     def register_new_face(
         self,
@@ -77,13 +88,16 @@ class FaceRec:
         
         return face_meta
         
-    def lookup_known_face(self, face_encoding: np.array) -> dict | None:
+    def lookup_known_face(self, face_encoding: NDArray) -> FaceRecognitionRead | None:
         metadata = None
         
         if len(self.known_face_encodings) == 0:
             return
             
-        face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
+        face_distances = face_recognition.face_distance(
+            self.known_face_encodings,
+            face_encoding,
+        )
         best_match_index = np.argmin(face_distances)
         best_match_distance = face_distances[best_match_index]
         

@@ -18,8 +18,8 @@ class LocalAPI:
     }
     _BASE_URL = f'http://{settings.api_url}'
     _AUTH_URL = f'{_BASE_URL}/auth/jwt/login'
-    _INTERCOM_URL = f'{_BASE_URL}/intercom'
-    _BOT_USER_URL = f'{_BASE_URL}/bot_user'
+    _INTERCOM_URL = f'{_BASE_URL}/intercom/'
+    _BOT_USER_URL = f'{_BASE_URL}/bot_user/'
     _RECOGNITION_URL = f'{_BASE_URL}/recognition/'
     
     def __init__(self) -> None:
@@ -37,7 +37,7 @@ class LocalAPI:
                 
     async def open_door(self, session: ClientSession, door_id: int) -> bool:
         async with session.post(
-            self._INTERCOM_URL + '/open',
+            self._INTERCOM_URL + 'open',
             json=str(door_id),
             headers=self._HEADER,
         ) as response:
@@ -45,14 +45,23 @@ class LocalAPI:
             
     async def get_snapshot(self, session: ClientSession, door_id: int) -> bytes:
         async with session.get(
-            f'{self._INTERCOM_URL}/snapshot/{door_id}',
+            f'{self._INTERCOM_URL}{door_id}/snapshot',
             headers=self._HEADER
         ) as response:
             return await response.read()
         
+    async def get_video_link(self, session: ClientSession, door_id: int) -> str:
+        async with session.get(
+            f'{self._INTERCOM_URL}{door_id}/videolink',
+            headers=self._HEADER
+        ) as response:
+            response = await response.json()
+
+            return response
+        
     async def bot_user_exist(self, session: ClientSession, bot_user_id:int) -> bool:
         async with session.get(
-            f'{self._BOT_USER_URL}/{bot_user_id}',
+            f'{self._BOT_USER_URL}{bot_user_id}',
             headers=self._HEADER,
         ) as response:
             return response.status == HTTPStatus.OK

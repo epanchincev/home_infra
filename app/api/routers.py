@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.api.endpoints import (bot_user_router, intercom_router,
                                recognition_router, user_router)
 
-main_router = APIRouter()
+main_router = APIRouter(prefix='/api/v1')
 main_router.include_router(user_router)
 main_router.include_router(
     intercom_router,

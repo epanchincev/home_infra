@@ -10,7 +10,8 @@ AUTH_HEADERS = {
     "authorization": "Bearer uwxzq88x5yqbw20ex2wcjxsqb5tet7"
 }
 REST_URL = BASE_URL + '/rest'
-ACCESSCONTROLS_URL = REST_URL + '/v1/places/3778773/accesscontrols'
-OPEN_DOOR_URL = ACCESSCONTROLS_URL + '/{}/actions'
+ACCESSCONTROLS_URL = REST_URL + '/v1/places/3778773/accesscontrols/'
+OPEN_DOOR_URL = ACCESSCONTROLS_URL + '{}/actions'
 OPEN_DOOR_BODY = "accessControlOpen"
-SNAPSHOT_URL = ACCESSCONTROLS_URL + '/{}/videosnapshots'
+SNAPSHOT_URL = ACCESSCONTROLS_URL + '{}/videosnapshots'
+GET_VIDEO_LINK_URL = REST_URL + '/v1/forpost/cameras/{}/video?LightStream=0'

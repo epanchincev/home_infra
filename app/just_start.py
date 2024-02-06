@@ -11,7 +11,7 @@ import numpy as np
 from aiohttp import ClientSession
 from numpy.typing import NDArray
 
-sys.path = ['C:\\Dev\\home_infra\\'] + sys.path  # noqa
+sys.path = ['/Users/epanchincev/dev/home_infra'] + sys.path  # noqa
 
 from api_client.local_api import local  # noqa
 from app.bot import bot  # noqa
@@ -98,7 +98,10 @@ class FaceRec:
         if len(self.known_face_encodings) == 0:
             return
             
-        face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
+        face_distances = face_recognition.face_distance(
+            self.known_face_encodings,
+            face_encoding,
+        )
         best_match_index = np.argmin(face_distances)
         best_match_distance = face_distances[best_match_index]
         
@@ -146,7 +149,8 @@ async def check_face(intercom_id: int):
                 for face_encoding in faces_encoding:
                     known_face = face.lookup_known_face(face_encoding)
                     if known_face:
-                        logging.info((f'Домофон {intercom_id}. \033[32mПришел {known_face.name},' 
+                        logging.info((f'Домофон {intercom_id}. '
+                                      f'\033[32mПришел {known_face.name},' 
                                       f'совпадение {known_face.last_percent}%\033[0m'))
                         
                         await bot.send_message(
@@ -156,7 +160,8 @@ async def check_face(intercom_id: int):
                         )
                         await local.open_door(session, intercom_id)
                     else:
-                        logging.warning(f'Домофон {intercom_id} \033[31mЛицо отсутвует в БД\033[0m')
+                        logging.warning(f'Домофон {intercom_id} '
+                                        '\033[31mЛицо отсутвует в БД\033[0m')
             else:
                 logging.info(f'Домофон {intercom_id}. \033[33mЛица не найдены\033[0m')
             duration = (datetime.now() - start_time)
