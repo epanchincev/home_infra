@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.db import Base
 
+
 class BotUser(Base):
     """Пользователь в БД"""
     first_name: Mapped[str | None] = mapped_column(String(64))

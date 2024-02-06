@@ -4,7 +4,7 @@ from http import HTTPStatus
 from aiohttp import ClientSession
 
 from core.config import settings
-from schemas import IntercomDB, FaceRecognitionRead
+from schemas import FaceRecognitionRead, IntercomDB
 
 
 class LocalAPI:

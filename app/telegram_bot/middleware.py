@@ -1,11 +1,10 @@
-from typing import Any, Awaitable, Callable, Dict
 import logging
+from typing import Any, Awaitable, Callable, Dict
 
-from aiohttp import ClientSession
 from aiogram import BaseMiddleware
-from aiogram.types import TelegramObject
 from aiogram.exceptions import TelegramBadRequest
-
+from aiogram.types import TelegramObject
+from aiohttp import ClientSession
 from api_client.local_api import local
 
 

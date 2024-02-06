@@ -1,16 +1,14 @@
-from aiohttp import ClientSession
-from aiogram import F, Router, Bot
+from aiogram import Bot, F, Router
 from aiogram.filters import Command, StateFilter
-from aiogram.types import (
-    Message, ReplyKeyboardMarkup, InlineKeyboardMarkup,
-    CallbackQuery, BufferedInputFile)
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.fsm.context import FSMContext
-
-from telegram_bot.states import BotState
-from telegram_bot.callback_factory import IntercomCallback
-from schemas import IntercomDB
+from aiogram.types import (BufferedInputFile, CallbackQuery,
+                           InlineKeyboardMarkup, Message, ReplyKeyboardMarkup)
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+from aiohttp import ClientSession
 from api_client.local_api import local
+from schemas import IntercomDB
+from telegram_bot.callback_factory import IntercomCallback
+from telegram_bot.states import BotState
 
 router = Router()
 router.my_chat_member.filter(F.chat.type == 'private')

@@ -3,11 +3,9 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-
 from core.config import settings
-from telegram_bot.start import router
 from telegram_bot.middleware import MainMiddleware
-
+from telegram_bot.start import router
 
 file_log = logging.FileHandler('log.txt')
 console_out = logging.StreamHandler()

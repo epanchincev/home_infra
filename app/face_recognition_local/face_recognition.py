@@ -1,14 +1,14 @@
-from datetime import datetime
 import io
-
 import pickle
+from datetime import datetime
 from pathlib import Path
 
-import numpy as np
 import face_recognition
+import numpy as np
 
 from app.core.config import settings
 from app.schemas import FaceRecognitionRead
+
 
 class NotOnlyOneFaceRecognition(Exception):
     pass

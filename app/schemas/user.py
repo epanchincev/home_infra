@@ -1,5 +1,6 @@
 from fastapi_users.schemas import BaseUser, BaseUserCreate, BaseUserUpdate
 
+
 class UserRead(BaseUser[int]):
     pass
 

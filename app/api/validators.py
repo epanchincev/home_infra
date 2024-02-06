@@ -4,8 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud import intercom_crud
-from app.models import Intercom, BotUser
-
+from app.models import BotUser, Intercom
 
 OBJECT_NOT_FOUND_ERROR = '{} не найден!'
 OBJECT_FOUND_ERROR = '{} уже существует!'

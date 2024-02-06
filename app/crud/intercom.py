@@ -1,8 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .base import CRUDBase
 from app.models import Intercom
+
+from .base import CRUDBase
 
 
 class CRUDIntercom(CRUDBase):

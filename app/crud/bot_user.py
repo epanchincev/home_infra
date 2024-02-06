@@ -1,5 +1,6 @@
-from .base import CRUDBase
 from app.models import BotUser
+
+from .base import CRUDBase
 
 
 class CRUDBotUser(CRUDBase):

@@ -1,15 +1,14 @@
 import aiohttp
-from fastapi import APIRouter, Depends, Response, Body
+from fastapi import APIRouter, Body, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.validators import existence_check, check_intercom_duplicate
+from app.api.validators import check_intercom_duplicate, existence_check
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud import intercom_crud
+from app.ertelecom.intercom import get_inet_session, intercom_action
 from app.models import Intercom
-from app.schemas import IntercomCreate, IntercomUpdate, IntercomDB
-from app.ertelecom.intercom import intercom_action, get_inet_session
-
+from app.schemas import IntercomCreate, IntercomDB, IntercomUpdate
 
 router = APIRouter()
 

@@ -1,21 +1,22 @@
 import asyncio
-from datetime import datetime
+import io
 import logging
 import pickle
 import sys
-import io
+from datetime import datetime
 from pathlib import Path
 
-from aiohttp import ClientSession
-import numpy as np
-from numpy.typing import NDArray
 import face_recognition
+import numpy as np
+from aiohttp import ClientSession
+from numpy.typing import NDArray
 
 sys.path = ['C:\\Dev\\home_infra\\'] + sys.path  # noqa
 
 from api_client.local_api import local  # noqa
 from app.bot import bot  # noqa
 from app.schemas import FaceRecognitionRead  # noqa
+
 
 class NotOnlyOneFaceRecognition(Exception):
     pass

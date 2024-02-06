@@ -6,9 +6,7 @@ from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud import bot_user_crud
 from app.models import BotUser
-from app.schemas import BotUserCreate, BotUserUpdate, BotUserDB
-
-
+from app.schemas import BotUserCreate, BotUserDB, BotUserUpdate
 
 router = APIRouter()
 

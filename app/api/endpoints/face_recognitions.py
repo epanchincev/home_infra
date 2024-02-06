@@ -1,11 +1,8 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from app.core.user import current_user
-from app.schemas import FaceRecognitionRead
 from app.face_recognition_local import face_rec
-
-
-
+from app.schemas import FaceRecognitionRead
 
 router = APIRouter()
 

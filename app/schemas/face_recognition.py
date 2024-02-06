@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Base64Str
+from pydantic import Base64Str, BaseModel
 
 
 class FaceRecognitionBase(BaseModel):

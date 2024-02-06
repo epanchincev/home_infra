@@ -1,7 +1,8 @@
 from aiohttp import ClientSession
 
 from app.core.config import settings
-from .params import OPEN_DOOR_URL, OPEN_DOOR_BODY, SNAPSHOT_URL
+
+from .params import OPEN_DOOR_BODY, OPEN_DOOR_URL, SNAPSHOT_URL
 
 
 async def get_inet_session() -> ClientSession:
