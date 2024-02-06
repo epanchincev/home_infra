@@ -169,6 +169,10 @@ async def main() -> None:
     await asyncio.gather(*[check_face(i) for i in range(1, 5)], update(face))
     
 if __name__ == '__main__':
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        face.save_known_faces()
+        raise SystemExit()
     
 
