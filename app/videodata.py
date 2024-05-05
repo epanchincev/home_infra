@@ -8,9 +8,9 @@ from aiohttp import ClientSession
 import cv2
 
 sys.path = ['/Users/epanchincev/dev/home_infra'] + sys.path  # noqa
-from api_client.local_api import local
-from face_recognition_local.face_recognition import face_rec, FaceRec
-from bot import bot
+from api_client.local_api import local  # noqa
+from face_recognition_local.face_recognition import face_rec, FaceRec  # noqa
+from bot import bot  # noqa
 
 
 logging.basicConfig(
@@ -54,7 +54,7 @@ class CameraBufferThread(threading.Thread):
         self.join()
 
 
-async def video_process(door_id: 1):
+async def video_process(door_id: int):
     vcap = await get_vcap(door_id)
     interval = 0.3
     with CameraBufferThread(vcap) as cam_buffer:
